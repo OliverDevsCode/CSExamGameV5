@@ -26,6 +26,8 @@ let playerImage;
 // Game instance
 let game;
 
+const API_BASE = '';
+
 // Remove the global keyState object as it will be moved to the Controls class
 
 // This will run immediately when the script is loaded
