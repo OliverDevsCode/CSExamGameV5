@@ -1,0 +1,858 @@
+/* Base styles with improved cross-browser compatibility */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Changed from center to flex-start */
+  min-height: 100vh;
+  background-color: #140;
+  color: #fff;
+  font-family: 'Press Start 2P', cursive, sans-serif;
+  margin: 0;
+  overflow: hidden; /* Prevent scrolling */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  padding-top: 10px; /* Base padding */
+  
+  /* Add support for iOS devices with notches */
+  padding-top: max(10px, env(safe-area-inset-top, 10px));
+  padding-left: env(safe-area-inset-left, 0);
+  padding-right: env(safe-area-inset-right, 0);
+}
+
+/* Custom class for devices with notches that will be added via JavaScript */
+body.has-notch {
+  padding-top: max(30px, env(safe-area-inset-top, 30px));
+}
+
+/* Root-level checks for safe areas */
+:root[data-supports-safe-area="true"] {
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+  --safe-left: env(safe-area-inset-left);
+  --safe-right: env(safe-area-inset-right);
+}
+
+:root:not([data-supports-safe-area="true"]) {
+  --safe-top: 0px;
+  --safe-bottom: 0px;
+  --safe-left: 0px;
+  --safe-right: 0px;
+}
+
+.game-container {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Changed from center to flex-start */
+  align-items: center;
+  width: 100%;
+  max-width: 1000px;
+  padding: 0.5rem 1rem; /* Reduced top/bottom padding */
+  margin: 0 auto;
+  padding-top: calc(0.5rem + var(--safe-top, 0px));
+}
+
+h1 {
+  margin: 0.2rem 0; /* Reduced margins */
+  font-size: 1.5em;
+}
+
+p {
+  margin: 0.2rem 0 0.4rem 0; /* Reduced margins */
+  font-size: 0.8em;
+}
+
+/* Game UI styling */
+#gameUI {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  width: 100%;
+  margin: 0.3rem 0; /* Reduced margins */
+  padding: 0.4rem;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+}
+
+#gameUI p {
+  margin: 0.2rem;
+  font-size: 0.7em;
+}
+
+#gameCanvas {
+  width: 100%;
+  max-width: 900px;
+  height: auto;
+  margin: 0 auto;
+}
+
+/* Game menu styling */
+.game-menu {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 0.3rem 0; /* Reduced margins */
+  gap: 1rem;
+  width: 100%;
+}
+
+.menu-button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-family: 'Press Start 2P', cursive, sans-serif;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.menu-button:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.menu-button:active {
+  background-color: #398e3d;
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Play button (green) */
+.play-button {
+  background-color: #4CAF50 !important;
+  color: white !important;
+  font-weight: bold;
+  padding: 0.6rem 1.5rem !important;
+  border: 2px solid #45a049 !important;
+  box-shadow: 0 4px 8px rgba(0, 120, 0, 0.4) !important;
+  animation: pulse-green 2s infinite;
+}
+
+.play-button:hover {
+  background-color: #5dbd61 !important;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 120, 0, 0.5) !important;
+}
+
+/* Pause button (red/orange) */
+.pause-button {
+  background-color: #FF7F50 !important; /* Coral color */
+  color: white !important;
+  font-weight: bold;
+  padding: 0.6rem 1.5rem !important;
+  border: 2px solid #FF6347 !important; /* Tomato color for border */
+  box-shadow: 0 4px 8px rgba(255, 99, 71, 0.4) !important;
+}
+
+.pause-button:hover {
+  background-color: #FF6347 !important; /* Tomato color */
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 12px rgba(255, 99, 71, 0.5) !important;
+}
+
+@keyframes pulse-green {
+  0% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+  }
+}
+
+/* Game over screen */
+.game-over-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000 !important; /* Higher z-index */
+    transition: opacity 0.2s ease-in-out;
+}
+
+.game-over-content {
+    background-color: #f44336;
+    padding: 2rem;
+    border-radius: 1.25rem;
+    text-align: center;
+    color: white;
+    width: 90%;
+    max-width: 400px;
+}
+
+.game-over-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.game-over-content button {
+    background-color: white;
+    border: none;
+    color: #f44336;
+    padding: 0.75rem 1.5rem;
+    margin: 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: bold;
+    font-family: inherit;
+}
+
+.game-over-content button:hover {
+    background-color: #eee;
+}
+
+/* Leaderboard screen */
+.leaderboard-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    padding: 1rem;
+}
+
+.leaderboard-screen h2 {
+    color: #ffcc00;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    text-shadow: 2px 2px 0 #000;
+}
+
+.leaderboard-screen ol {
+    list-style-position: inside;
+    padding: 0;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 1.5rem;
+    overflow-y: auto;
+    max-height: 60vh;
+}
+
+.leaderboard-screen ol li {
+    background-color: rgba(255, 255, 255, 0.1);
+    margin: 0.5rem 0;
+    padding: 0.75rem;
+    border-radius: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.leaderboard-screen ol li:nth-child(1) {
+    background-color: rgba(255, 215, 0, 0.3);
+}
+
+.leaderboard-screen ol li:nth-child(2) {
+    background-color: rgba(192, 192, 192, 0.3);
+}
+
+.leaderboard-screen ol li:nth-child(3) {
+    background-color: rgba(205, 127, 50, 0.3);
+}
+
+.leaderboard-screen ol li .rank {
+    width: 2.5rem;
+    min-width: 2.5rem;
+}
+
+.leaderboard-screen ol li .name {
+    flex-grow: 1;
+    text-align: left;
+    padding: 0 1.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.leaderboard-screen ol li .score {
+    font-weight: bold;
+    color: #ffcc00;
+    padding-right: 1.25rem;
+}
+
+.leaderboard-screen ol li .date {
+    font-size: 0.7em;
+    opacity: 0.7;
+}
+
+.leaderboard-screen button {
+    background-color: #ffcc00;
+    border: none;
+    color: #000;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: bold;
+    font-family: 'Press Start 2P', cursive, sans-serif;
+}
+
+.leaderboard-screen button:hover {
+    background-color: #ffdd55;
+}
+
+/* Helper classes */
+.hidden {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+.game-over-screen:not(.hidden) {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+.leaderboard-screen:not(.hidden) {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+/* Touch Controls */
+.touch-controls {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 150px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* Five equal columns for better spacing */
+  justify-items: center;
+  align-items: center;
+  padding: 10px 20px;
+  z-index: 100;
+  pointer-events: none; /* Allow clicks to pass through the container */
+}
+
+.joystick {
+  width: 120px;
+  height: 120px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 60px;
+  position: relative;
+  pointer-events: auto; /* Enable pointer events for this element */
+  touch-action: none; /* Prevent browser handling of touch events */
+  grid-column: 1; /* Place in first column */
+  justify-self: start; /* Align to start (left) of grid cell */
+  margin-left: 20px; /* Add some margin from the left edge */
+}
+
+.joystick-knob {
+  width: 50px;
+  height: 50px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 25px;
+  position: absolute;
+  top: 50%;  /* Position in center */
+  left: 50%; /* Position in center */
+  transform: translate(-50%, -50%); /* Center the knob properly */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.fire-button {
+  width: 100px;
+  height: 100px;
+  background-color: #f44336;
+  border-radius: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  pointer-events: auto; /* Enable pointer events for this element */
+  user-select: none;
+  touch-action: none; /* Prevent browser handling of touch events */
+  transition: transform 0.1s, background-color 0.1s;
+  grid-column: 5; /* Place in last column */
+  justify-self: end; /* Align to end (right) of grid cell */
+  margin-right: 20px; /* Add some margin from the right edge */
+}
+
+/* Show controls on both touch and non-touch devices */
+.touch-controls:not(.hidden) {
+  display: grid !important;
+}
+
+/* Only show touch controls on touch devices */
+@media (hover: none) {
+  .touch-controls:not(.hidden) {
+    display: flex;
+  }
+}
+
+/* Adjust controls for screen sizes */
+@media screen and (min-width: 1200px) {
+  .touch-controls {
+    padding: 10px 50px; /* More padding on wider screens */
+  }
+  
+  .joystick {
+    margin-left: 50px; /* More margin on wider screens */
+  }
+  
+  .fire-button {
+    margin-right: 50px; /* More margin on wider screens */
+  }
+}
+
+@media screen and (max-width: 768px) {
+    body {
+        padding-top: max(5px, env(safe-area-inset-top, 5px)); /* Use safe area inset if available */
+    }
+    
+    /* For devices with notches */
+    body.has-notch {
+        padding-top: max(20px, env(safe-area-inset-top, 20px));
+    }
+    
+    .game-container {
+        padding: 0.25rem; /* Reduced padding */
+    }
+    
+    h1 {
+        font-size: 1.2rem;
+        margin: 0.1rem 0; /* Minimal margin */
+    }
+    
+    p {
+        font-size: 0.7rem;
+        margin: 0.1rem 0 0.3rem 0; /* Minimal margin */
+    }
+    
+    #gameUI {
+        flex-direction: row; /* Keep UI horizontal on tablets */
+        flex-wrap: wrap;
+        padding: 0.3rem;
+        margin: 0.2rem 0;
+    }
+    
+    #gameUI p {
+        font-size: 0.6rem;
+        margin: 0.1rem 0.2rem;
+    }
+    
+    .menu-button {
+        font-size: 0.7rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .game-over-content {
+        padding: 1.5rem;
+    }
+    
+    .game-over-content h2 {
+        font-size: 1.2rem;
+    }
+    
+    .game-over-content button {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.8rem;
+    }
+    
+    .leaderboard-screen h2 {
+        font-size: 1.2rem;
+    }
+    
+    .leaderboard-screen ol li {
+        padding: 0.6rem;
+    }
+    
+    .leaderboard-screen button {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.8rem;
+    }
+    
+    .joystick {
+        width: 100px;
+        height: 100px;
+        margin-left: 10px; /* Less margin on smaller screens */
+    }
+    
+    .joystick-knob {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .fire-button {
+        width: 80px;
+        height: 80px;
+        font-size: 0.8rem;
+        margin-right: 10px; /* Less margin on smaller screens */
+    }
+    
+    .touch-controls {
+        grid-template-columns: 2fr 1fr 2fr; /* Three columns with middle one smaller */
+    }
+    
+    .game-container {
+        padding: 0.5rem;
+    }
+    
+    .touch-controls {
+        height: 130px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    body {
+        padding-top: max(2px, env(safe-area-inset-top, 2px));
+        align-items: flex-start;
+    }
+    
+    /* For devices with notches */
+    body.has-notch {
+        padding-top: max(15px, env(safe-area-inset-top, 15px));
+    }
+    
+    .game-container {
+        padding: 0.2rem;
+    }
+    
+    h1 {
+        font-size: 0.9rem;
+        margin: 0 0 0.1rem 0; /* Almost no margin */
+    }
+    
+    p {
+        font-size: 0.5rem;
+        margin: 0 0 0.2rem 0; /* Almost no margin */
+    }
+    
+    #gameUI {
+        flex-direction: row; /* Switch to horizontal layout */
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: 0.2rem;
+        margin: 0.1rem 0;
+    }
+    
+    #gameUI p {
+        font-size: 0.5rem;
+        margin: 0.05rem 0.15rem;
+        white-space: nowrap; /* Prevent line breaks */
+    }
+    
+    .game-menu {
+        margin: 0.1rem 0;
+        gap: 0.5rem;
+    }
+    
+    h1 {
+        font-size: 1rem;
+    }
+    
+    p {
+        font-size: 0.6rem;
+    }
+    
+    #gameUI {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    #gameUI p {
+        margin: 0.15rem;
+        font-size: 0.55rem;
+    }
+    
+    .menu-button {
+        font-size: 0.6rem;
+        padding: 0.3rem 0.6rem;
+    }
+    
+    .game-over-content {
+        padding: 1rem;
+        width: 95%;
+    }
+    
+    .game-over-content h2 {
+        font-size: 1rem;
+    }
+    
+    .game-over-content button {
+        padding: 0.5rem 1rem;
+        font-size: 0.7rem;
+        margin: 0.4rem 0.2rem;
+    }
+    
+    .leaderboard-screen h2 {
+        font-size: 1rem;
+    }
+    
+    .leaderboard-screen ol li {
+        padding: 0.5rem;
+        font-size: 0.6rem;
+    }
+    
+    .leaderboard-screen button {
+        padding: 0.5rem 1rem;
+        font-size: 0.7rem;
+    }
+    
+    .joystick {
+        width: 80px;
+        height: 80px;
+        margin-left: 5px; /* Even less margin on very small screens */
+    }
+    
+    .joystick-knob {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .fire-button {
+        width: 70px;
+        height: 70px;
+        font-size: 0.7rem;
+        margin-right: 5px; /* Even less margin on very small screens */
+    }
+    
+    .touch-controls {
+        grid-template-columns: 1fr 0.5fr 1fr; /* Three columns with middle one smaller */
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 0.9rem;
+        margin: 0.3rem 0;
+    }
+    
+    p {
+        font-size: 0.5rem;
+        margin: 0.3rem 0;
+    }
+    
+    .game-container {
+        padding: 0.3rem;
+    }
+    
+    #gameUI {
+        flex-direction: column;
+        align-items: center;
+        padding: 0.3rem;
+        margin: 0.3rem 0;
+    }
+    
+    #gameUI p {
+        margin: 0.1rem;
+        font-size: 0.5rem;
+    }
+    
+    .menu-button {
+        font-size: 0.6rem;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .game-menu {
+        margin: 0.3rem 0;
+        gap: 0.5rem;
+    }
+    
+    .game-over-content {
+        padding: 0.8rem;
+        width: 95%;
+    }
+    
+    .game-over-content h2 {
+        font-size: 0.9rem;
+    }
+    
+    .game-over-content button {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.6rem;
+        margin: 0.3rem 0.2rem;
+    }
+    
+    .leaderboard-screen h2 {
+        font-size: 0.9rem;
+    }
+    
+    .leaderboard-screen ol li {
+        padding: 0.4rem;
+        font-size: 0.55rem;
+    }
+    
+    .leaderboard-screen button {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.6rem;
+    }
+    
+    .touch-controls {
+        height: 100px;
+        padding: 5px;
+    }
+    
+    .joystick {
+        width: 70px;
+        height: 70px;
+        margin-left: 5px;
+    }
+    
+    .joystick-knob {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .fire-button {
+        width: 60px;
+        height: 60px;
+        font-size: 0.6rem;
+        margin-right: 5px;
+    }
+}
+
+@media screen and (max-width: 360px) {
+    body {
+        padding-top: 0; /* No padding on very small screens */
+    }
+    
+    .game-container {
+        padding: 0.1rem;
+    }
+    
+    h1 {
+        font-size: 0.8rem;
+        margin: 0;
+    }
+    
+    p {
+        font-size: 0.45rem;
+        margin: 0 0 0.1rem 0;
+    }
+    
+    #gameUI {
+        padding: 0.15rem;
+        margin: 0.05rem 0;
+    }
+    
+    #gameUI p {
+        font-size: 0.45rem;
+        margin: 0.05rem 0.1rem;
+    }
+    
+    h1 {
+        font-size: 0.8rem;
+        margin: 0.2rem 0;
+    }
+    
+    p {
+        font-size: 0.45rem;
+        margin: 0.2rem 0;
+    }
+    
+    #gameUI p {
+        font-size: 0.45rem;
+    }
+    
+    .menu-button {
+        font-size: 0.55rem;
+        padding: 0.2rem 0.4rem;
+    }
+    
+    .touch-controls {
+        height: 90px;
+        padding: 3px;
+    }
+    
+    .joystick {
+        width: 60px;
+        height: 60px;
+        margin-left: 3px;
+    }
+    
+    .joystick-knob {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .fire-button {
+        width: 50px;
+        height: 50px;
+        font-size: 0.5rem;
+        margin-right: 3px;
+    }
+}
+
+/* iPhone X/XR/11/12/13 specific media queries */
+@supports (padding-top: constant(safe-area-inset-top)) or (padding-top: env(safe-area-inset-top)) {
+    @media screen and (device-width: 375px) and (device-height: 812px),
+           screen and (device-width: 414px) and (device-height: 896px),
+           screen and (device-width: 390px) and (device-height: 844px),
+           screen and (device-width: 428px) and (device-height: 926px) {
+        body {
+            padding-top: max(20px, env(safe-area-inset-top, 20px));
+        }
+        
+        .game-container {
+            padding-top: 5px;
+        }
+    }
+}
+
+/* Cross-browser compatibility */
+@supports (-webkit-touch-callout: none) {
+    /* CSS for iOS devices */
+    body {
+        /* Fix height property parsing error */
+        min-height: 100vh;
+        /* Safari-specific height fix */
+        min-height: -webkit-fill-available;
+    }
+}
+
+/* Add a debug class that can be toggled */
+.debug-visible * {
+  border: 1px solid rgba(255, 0, 0, 0.3);
+}
+
+/* Updated styles for landscape orientation on notched devices */
+@media screen and (orientation: landscape) {
+    /* Since the notch will be on the side in landscape mode */
+    body.has-notch {
+        padding-top: max(5px, env(safe-area-inset-top, 5px));
+        padding-left: max(5px, env(safe-area-inset-left, 5px));
+        padding-right: max(5px, env(safe-area-inset-right, 5px));
+    }
+    
+    /* Position the game container with extra space for the notch */
+    .game-container {
+        padding-left: env(safe-area-inset-left, 0);
+        padding-right: env(safe-area-inset-right, 0);
+    }
+}

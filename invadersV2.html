@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Updated viewport meta tag with viewport-fit=cover for notched devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Space Invaders Redux</title>
+    <link rel="stylesheet" href="invadersV2.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👾</text></svg>">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+</head>
+<body>
+    <div id="user-info"></div>
+    <div class="game-container">
+        <h1>Space Invaders Redux</h1>
+        <p>Use WASD keys to move and the space bar to shoot.</p>
+
+        <!-- Add menu bar here -->
+        <div id="gameMenu" class="game-menu">
+            <button id="playPauseButton" class="menu-button">Pause</button>
+            <button id="viewLeaderboardButton" class="menu-button">Leaderboard</button>
+        </div>
+
+        <div id="gameUI" class="game-ui">
+          <p id="score">Score: 0</p>
+          <p id="lives">Lives: 3</p>
+          <p id="bullets">Bullets: 50</p>
+          <p id="speed">speed</p>
+        </div>
+
+        <div id="gameCanvas"></div>
+        
+        <!-- Add touch controls -->
+        <div id="touchControls" class="touch-controls hidden">
+            <div id="joystick" class="joystick">
+                <div id="joystickKnob" class="joystick-knob"></div>
+            </div>
+            <div id="fireButton" class="fire-button">FIRE</div>
+        </div>
+        
+        <div id="gameOverScreen" class="game-over-screen hidden">
+            <div class="game-over-content">
+                <h2>Game Over</h2>
+                <p id="finalScore">Your final score: 0</p>
+                <button id="retryButton">Retry</button>
+                <button id="leaderboardButton">Add to leaderboard</button>
+            </div>
+        </div>
+
+        <div id="leaderboardScreen" class="leaderboard-screen hidden">
+            <h2>Top Scores</h2>
+            <ol id="leaderboard"></ol>
+            <button id="leaderboardBack">Back to Game</button>
+        </div>
+    </div>
+    <a class="home-link" href="index.html">← Back to Home</a>
+    <script src="touchcontrols.js"></script>
+    <script src="invadersV2.js"></script>
+</body>
+</html>
